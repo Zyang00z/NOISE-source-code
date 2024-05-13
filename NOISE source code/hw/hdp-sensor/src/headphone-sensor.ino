@@ -1,3 +1,29 @@
+/* 
+Title; ArduinoCore-avr
+Author; Arduino
+Date; <2022>
+Code version; <1.8.6>
+Availability; https://github.com/arduino/ArduinoCore-avr 
+*/
+
+/* 
+Title; Arduino  - ESP8266 core for Arduino
+Author; esp8266
+Date; <2023>
+Code version; <3.1.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+/* 
+Title; CapacitiveSensor
+Author; PaulStoffregen
+Date; <2016>
+Code version; <0.5.1>
+Availability; https://github.com/PaulStoffregen/CapacitiveSensor
+*/
+
+
+
 #include <Arduino.h>
 #include <CapacitiveSensor.h>
 
@@ -16,11 +42,11 @@
 
 typedef uint16_t buff_t;
 
-/* ---- Globals ---- */
+//Globals
 
 CapacitiveSensor cs = CapacitiveSensor(CS_RES, CS_SENSE);
 
-/* ---- Headphone events ---- */
+//Headphone events 
 
 enum headphone_state : uint8_t {
   EVENT_OFF = 0,
@@ -183,15 +209,6 @@ void setup()
 
   delay(1000);
 
-  Ser.println();
-  Ser.print(">> Set up board serial and host serial (");
-  Ser.print(SERIAL_BAUD);
-  Ser.println(" baud)");
-
-  Ser.print(F("---- "));
-  Ser.print(__FILE__);
-  Ser.println(F(" ----"));
-
 #ifdef PRINT_OSCCAL
   Ser.print("OSCCAL -> 0x");
   Ser.println(OSCCAL, HEX);
@@ -219,9 +236,10 @@ void setup()
 
 #ifdef TEST_TOUCH_SENSE
   #warning using test mode TEST_TOUCH_SENSE, normal detection is turned off
-  Serial.println(F(">> In test mode! Normal detection is turned off!"));
+  Serial.println(F(">> Testing! Normal detection is turned off!"));
 #endif
 
+ 
   // set up GPIO pins
 #ifdef FLEX
   pinMode(FLEX, INPUT);
@@ -261,7 +279,7 @@ void setup()
 #endif
 }
 
-/* ---- Loop ---- */
+//Loop
 
 void tab()
 {
@@ -303,7 +321,7 @@ void loop()
 
 #define AVG_PUSH
 #ifdef AVG_PUSH
-    // push smoothed value to stats buffer
+    // push smooth value to stats buffer
     push_to_buffer(&stats_buffer, get_ring_buffer_mean(&avg_buffer));
 #else
     push_to_buffer(&stats_buffer, cs_count_raw);
@@ -338,57 +356,8 @@ void loop()
   bool flexed = is_flexed(flex);
 #endif
 
-  print_state();
+ 
 
-  // debug printing, only if DEBUG_OUTPUT_PIN is pulled low
-#ifdef DEBUG_OUTPUT_PIN
-  if (digitalRead(DEBUG_OUTPUT_PIN)) {
-#endif
-    Ser.print(ms);
-  #if 0
-    Ser.print("\t");
-    Ser.print(cs_count);
-  #endif
-    tab();
-    Ser.print(cs_count_raw);
-    tab();
-    Ser.print(fast_mean);
-    tab();
-    Ser.print(mean);
-  #if 0
-    tab();
-    Ser.print(get_ring_buffer_median());
-    tab();
-    Ser.print(get_ring_buffer_variance());
-  #endif
-    tab();
-    Ser.print(stats_mean);
-    tab();
-    Ser.print(fast_stdev);
-    tab();
-    Ser.print(stdev);
-    tab();
-    Ser.print(smooth_stdev);
-#ifdef FLEX
-#ifdef FLEX_BASELINE_AVERAGE
-    tab();
-    Ser.print(flex_mean);
-#else
-    tab();
-    Ser.print(flex);
-#endif
-    tab();
-    Ser.print(flexed);
-#endif
-
-    tab();
-    Ser.print(CS_HOOK);
-    tab();
-    Ser.print(CS_WORN);
-    tab();
-    Ser.print(CS_MIN);
-
-    //delay(10);
 #ifdef DEBUG_OUTPUT_PIN
   }
 #endif
@@ -628,7 +597,7 @@ void detect_fast(buff_t cs, bool flexed)
 #endif
 }
 
-// simple touch detection for testing
+//  touch detection for testing
 #ifdef TEST_TOUCH_SENSE
 
  #ifdef TEST_SEND_HOOK_EVENT
@@ -646,8 +615,9 @@ void detect_fast(buff_t cs, bool flexed)
   static bool state = false;
   static uint8_t i;
 
+ // signal transmitter of hook state
   if (!state && mean > 1200) {
-    Ser.println("H"); // signal transmitter of hook state
+    Ser.println("H"); 
     flash_twice();
     state = true;
   } else if (state && mean < 1200) {
@@ -679,10 +649,6 @@ void detect_fast(buff_t cs, bool flexed)
 
 #else
 
-/*
- * ms   raw     fm      m       sm      fstdev  stdev   smoothstdev
- * 7	56	60	73	79	34.10	3.18	0
- */
 
 inline void headphone_detection(
   buff_t fast_mean,
@@ -711,40 +677,5 @@ void flash_twice()
   }
 }
 
-// halt and flash LED quickly to show there's a problem
-void error()
-{
-  static uint8_t count = 0;
 
-#ifdef STATUS_LED
-  pinMode(STATUS_LED, OUTPUT);
-#endif
-#ifdef STATUS_LED
-  pinMode(LED, OUTPUT);
-#endif
-
-  for (;;) {
-#ifdef STATUS_LED
-    digitalWrite(STATUS_LED, HIGH);
-#endif
-#ifdef LED
-    digitalWrite(LED, HIGH);
-#endif
-
-    delay(100);
-
-#ifdef STATUS_LED
-    digitalWrite(STATUS_LED, LOW);
-#endif
-#ifdef LED
-    digitalWrite(LED, LOW);
-#endif
-
-    delay(100);
-
-    // spam serial
-    if (count++ % 10 == 0) {
-      Ser.println(".");
-    }
-  }
 }
