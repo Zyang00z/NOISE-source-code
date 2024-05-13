@@ -1,2 +1,2 @@
-# Kidcad files for the pcb deisgn of the headphone
+# Kidcad files for the PCB design of the headphone
 
