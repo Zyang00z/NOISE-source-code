@@ -1,2 +1,2 @@
-# NOISE-source-code
-source code for noise installation
+# Kidcad files for the pcb deisgn of the headphone
+
