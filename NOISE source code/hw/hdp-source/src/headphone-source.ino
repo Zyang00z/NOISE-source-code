@@ -1,3 +1,28 @@
+/* 
+Title; ArduinoCore-avr
+Author; Arduino
+Date; <2022>
+Code version; <1.8.6>
+Availability; https://github.com/arduino/ArduinoCore-avr 
+*/
+
+/* 
+Title; Arduino  - ESP8266 core for Arduino
+Author; esp8266
+Date; <2023>
+Code version; <3.1.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+/* 
+Title; ATTinyCore
+Author; SpenceKonde
+Date; <2021>
+Code version; <1.5.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+
 #include <Arduino.h>
 #include <Wire.h> // adafruit libs requirement *sigh*
 #include <SPI.h>
@@ -36,15 +61,14 @@ uint8_t SPEAKER_SOURCE_MAC[] = {0x2C, 0x3A, 0xE8, 0x22, 0x72, 0x97}; // speaker 
  #define HEADPHONE_COMMS_1 10 // Serial communication to headphone
 #endif
 
-// DREQ should be an interrupt capable pin
 
-/* ---- Globals ---- */
+//Globals 
 
 Adafruit_VS1053_FilePlayer audioPlayer =
   Adafruit_VS1053_FilePlayer(SHIELD_RESET, SHIELD_CS, SHIELD_DCS, DREQ, SD_CS);
 
-//EspSoftwareSerial::UART swSerial;
 
+//message indicating the intended event action of the audience
 enum event_message : uint8_t {
   EVENT_OFF = 0,
   EVENT_HEADPHONES_WORN,
@@ -53,7 +77,6 @@ enum event_message : uint8_t {
   NUM_EVENTS
 };
 
-/* ---- Set up ---- */
 
 void setup()
 {
@@ -75,7 +98,7 @@ void setup()
   Serial.println(WiFi.macAddress());
 #endif
 
-  // set up PWM output on HOOK_PWM_OUT
+  // signal output on HOOK_PWM_OUT
 #ifdef ESP_HW
   analogWriteFreq(4000);
   analogWrite(HOOK_PWM_OUT, 127);
@@ -84,20 +107,25 @@ void setup()
   Serial.println(TCCR1B, BIN);
   pinMode(HOOK_PWM_OUT, OUTPUT);
   analogWrite(HOOK_PWM_OUT, 127);
-  //TCCR1B = 0x05; // 40.64 Hz measured
-  //TCCR1B = 0x03; // 490 Hz measured
-  TCCR1B = 0x02; // 3.92 kHz measured - nice
-  //TCCR1B = 0x01; // 31.17 kHz measured - seems to cause autocalibration?
 #endif
 
-  // initialise the audio player
+/* 
+Title; dafruit_VS1053_Library
+Author; adafruit
+Date; <2024>
+Code version; <1.4.1>
+Availability; https://github.com/adafruit/Adafruit_VS1053_Library
+*/
+
+ 
+  // initialise the mp3 player
   if (!audioPlayer.begin()) {
      Serial.println(F("error: couldn't find VS1053"));
      error();
   }
   Serial.println(F("VS1053 audio player found"));
 
-  // configure the audio player
+  // configure the mp3 player
   audioPlayer.sineTest(0x44, 500);
   audioPlayer.setVolume(AUDIO_VOLUME, AUDIO_VOLUME);
   if (!audioPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT)) {
@@ -106,17 +134,21 @@ void setup()
   audioPlayer.playbackLoop(true);
   Serial.println(F("VS1053 audio player configured"));
 
-  // initialise the SD card
+  // initialise input SD card
   if (!SD.begin(SD_CS)) {
     Serial.println(F("error: SD failed, or not present"));
     error();
   }
   Serial.println(F("SD card found"));
 
-  // print SD card files
-  Serial.println(F("---- SD card contents ----"));
-  printDirectory(SD.open("/"), 0);
-  Serial.println(F("--------------------------"));
+ /* 
+Title; Is this improper use of #ifdef?
+Author; revolt_randy
+Date; <2022>
+Code version; <1>
+Availability; https://forum.arduino.cc/t/is-this-improper-use-of-ifdef/949361
+*/
+
 
   // set up ESP-NOW for communication with speaker audio source
 #ifdef ESP_HW
@@ -144,7 +176,15 @@ void setup()
   Serial.println(F("Audio is playing"));
 }
 
-/* ---- Main loop ---- */
+//Main loop 
+
+/* 
+Title; Arduino  - ESP8266 core for Arduino
+Author; esp8266
+Date; <2023>
+Code version; <3.1.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
 
 void loop()
 {
@@ -163,7 +203,7 @@ void loop()
 #endif
 }
 
-/* ---- Utility functions ---- */
+//Utility functions for checking esp working condition 
 
 void esp_now_message_sent(uint8_t *mac_addr, uint8_t status)
 {
@@ -174,6 +214,7 @@ void esp_now_message_sent(uint8_t *mac_addr, uint8_t status)
   }
 }
 
+//checking file information of audio files
 void printDirectory(File dir, int numTabs)
 {
    while(true) {
