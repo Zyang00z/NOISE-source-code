@@ -1,3 +1,36 @@
+/* 
+Title; ArduinoCore-avr
+Author; Arduino
+Date; <2022>
+Code version; <1.8.6>
+Availability; https://github.com/arduino/ArduinoCore-avr 
+*/
+
+/* 
+Title; Arduino  - ESP8266 core for Arduino
+Author; esp8266
+Date; <2023>
+Code version; <3.1.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+/* 
+Title; ATTinyCore
+Author; SpenceKonde
+Date; <2021>
+Code version; <1.5.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+/* 
+Title; dafruit_VS1053_Library
+Author; adafruit
+Date; <2024>
+Code version; <1.4.1>
+Availability; https://github.com/adafruit/Adafruit_VS1053_Library
+*/
+
+
 #include <Arduino.h>
 #include <Wire.h> // adafruit libs requirement *sigh*
 #include <SPI.h>
@@ -50,15 +83,14 @@ const char* password = "euchooC7";
  #define HEADPHONE_COMMS 10 // Serial communication to headphone
 #endif
 
-// N.b. DREQ should be an interrupt capable pin
 
-/* ---- Audio files ---- */
+//Audio files
 
 #define LOOP1 "/loop-1.mp3"
 #define LOOP2 "/loop-2.mp3"
 #define AUDIO_SFX_1 "/sfx-1.mp3"
 
-/* ---- Events ---- */
+//Events 
 
 // events are defined here
 enum event_message : uint8_t {
@@ -127,12 +159,10 @@ const char *get_event_name(event_message event)
   }
 }
 
-/* ---- Globals ---- */
-
+//Globals
 Adafruit_VS1053_FilePlayer audioPlayer =
   Adafruit_VS1053_FilePlayer(SHIELD_RESET, SHIELD_CS, SHIELD_DCS, DREQ, SD_CS);
 
-/* ---- Set up ---- */
 
 void setup()
 {
@@ -215,7 +245,7 @@ void setup()
 #endif
 }
 
-/* ---- Main loop ---- */
+//Main loop 
 
 #ifdef AUDIO
 //#define DEBUG_LOOP_CYCLE
@@ -236,7 +266,7 @@ void loop()
 #endif
 }
 
-/* ---- Utility functions ---- */
+//Utility function
 
 void hw_wdt_disable() {
   *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
