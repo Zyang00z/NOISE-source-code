@@ -1,3 +1,28 @@
+/* 
+Title; ArduinoCore-avr
+Author; Arduino
+Date; <2022>
+Code version; <1.8.6>
+Availability; https://github.com/arduino/ArduinoCore-avr 
+*/
+
+/* 
+Title; Arduino  - ESP8266 core for Arduino
+Author; esp8266
+Date; <2023>
+Code version; <3.1.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+/* 
+Title; ATTinyCore
+Author; SpenceKonde
+Date; <2021>
+Code version; <1.5.2>
+Availability; https://github.com/esp8266/Arduino 
+*/
+
+
 #include <Arduino.h>
 
 #ifdef ESP8266
@@ -34,7 +59,7 @@ const char* ssid = "HeadphoneB";
 #endif
 const char* password = "euchooC7";
 
-/* ---- Globals ---- */
+//Globals
 
 bool TRANSMIT = true;
 
@@ -210,7 +235,7 @@ void setup()
   SerialT.println(">> Starting application");
 }
 
-/* --- Loop --- */
+//Loop 
 
 void loop()
 {
@@ -371,13 +396,8 @@ void run_serial_command(char cmd) {
       return;
   }
 
-  if (command_parsed) {
-    if (TRANSMIT) {
-      tx_byte(message);
-    }
-    SerialT.println("Ok");
-  }
-}
+
+
 
 //#define SERIAL_FORWARD
 #define SERIAL_RELAY
@@ -470,23 +490,3 @@ void receive_serial_data() {
   }
 }
 
-#define NEON_BRIGHTNESS_MIN 10
-#define NEON_BRIGHTNESS_MAX 30
-#define NEON_BASE_DELAY 80
-#define NEON_TIME_MOD_RANGE 100
-
-void neon_flash()
-{
-  static uint32_t last_change;
-  static int32_t offset;
-
-  uint32_t calc_delta = (uint32_t) (offset + NEON_BASE_DELAY);
-
-  if (millis() - last_change > calc_delta) { // approximate 50 hz
-    offset = (int32_t) random(NEON_TIME_MOD_RANGE) - (NEON_TIME_MOD_RANGE / 2);
-#ifdef LED2
-    analogWrite(LED2, random(NEON_BRIGHTNESS_MIN, NEON_BRIGHTNESS_MAX));
-#endif
-    last_change = millis();
-  }
-}
