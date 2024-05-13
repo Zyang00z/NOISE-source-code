@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "cm-zy-hp")(type "KiCad")(uri "/home/ed/git/cm-zy-hp/kicad/cm-zy-hp.kicad_sym")(options "")(descr ""))
+  (lib (name "a")(type "KiCad")(uri "/home/ed/git/van/kicad/libs/arduino-kicad-library/arduino.kicad_sym")(options "")(descr ""))
+)
