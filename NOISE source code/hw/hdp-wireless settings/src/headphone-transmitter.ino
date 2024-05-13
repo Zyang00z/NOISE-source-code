@@ -72,6 +72,14 @@ enum event_message : uint8_t {
   EVENT_HEADPHONES_PLACED_ON_HOOK
 };
 
+/* 
+Title; Sharing code base between ESP32 and arduino
+Author; zliudr
+Date; <2020>
+Code version; <1>
+Availability; https://www.esp32.com/viewtopic.php?f=13&t=16358&sid=30e4019d533749dc90994024d0aed757
+*/
+
 // wireless communication message structure
 struct esp_now_package {
   uint8_t id;
